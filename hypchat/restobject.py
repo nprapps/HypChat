@@ -186,6 +186,19 @@ class Room(RestObject):
 		resp = self._requests.get(self.url+'/history', params=params)
 		return Linker._obj_from_text(resp.text, self._requests)
 
+	def latest(self, maxResults=200, tz='UTC', notBefore=None):
+
+		params = {
+			'timezone': tz,
+			'max-results': maxResults,
+		}
+
+		if notBefore:
+			params['not-before'] = notBefore
+
+		resp = self._requests.get(self.url+'/history/latest', params=params)
+		return Linker._obj_from_text(resp.text, self._requests)
+
 	def invite(self, user, reason):
 		self._requests.post(self.url+'/invite/%s' % user['id'], data={
 			'reason': reason,
