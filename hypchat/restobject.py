@@ -162,19 +162,26 @@ class Room(RestObject):
 			'topic': text,
 		})
 
-	def history(self, date='recent', maxResults=200):
+	def history(self, date='recent', maxResults=200, tz='UTC', startIndex=0, reverse=True):
 		"""
 		Requests the room history.
 		
 		Note that if date is 'recent' (the default), HipChat will not return the complete history.
 		"""
-		tz = 'UTC'
+
+		if reverse:
+			reverse = 'true'
+		else:
+			reverse = 'false'
+
 		if date != 'recent':
 			date, tz = mktimestamp(date)
 		params = {
 			'date':date,
 			'timezone': tz,
 			'max-results': maxResults,
+			'start-index': startIndex,
+			'reverse': reverse,
 		}
 		resp = self._requests.get(self.url+'/history', params=params)
 		return Linker._obj_from_text(resp.text, self._requests)
